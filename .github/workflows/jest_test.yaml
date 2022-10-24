@@ -1,0 +1,95 @@
+name: Run Jest Tests
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: "The NodeJS version to use"
+        default: "16.17.0"
+        required: false
+        type: string
+      should-update-codecov:
+        description: "Boolean indicating whether Codecov should be updated"
+        default: true
+        required: false
+        type: boolean
+    secrets:
+      CODECOV_TOKEN:
+        description: "Codecov token for private repo code coverage reports"
+        required: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      should-update-codecov: ${{ steps.should-update-codecov.outputs.should-update-codecov }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - run: npm install
+      - name: Run Jest Tests
+        id: jest_tests
+        run: npm test:ci
+
+      - name: Tests Succeeded ✅
+        if: ${{ success() }}
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'content-type: application/json' \
+            --data '{
+              "context": "tests",
+              "state": "success",
+              "description": "Tests passed",
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }'
+
+      - name: Tests Failed 🚨
+        if: ${{ failure() }}
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'content-type: application/json' \
+            --data '{
+              "context": "tests",
+              "state": "failure",
+              "description": "Tests failed",
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }'
+
+      - name: Should Update Codecov?
+        id: should-update-codecov
+        run: |
+          # Start with 'true'
+          SHOULD_UPDATE_CODECOV=true
+
+          # SHOULD_UPDATE_CODECOV has 2 false conditions:
+          #   1. If the repo is private and secret.CODECOV_TOKEN was not provided.
+          #   2. If input.should-update-codecov was explicitly set to false.
+
+          if [[ ${{ github.repository.private }} == true && -z ${{ secrets.CODECOV_TOKEN }} ]]; then
+            SHOULD_UPDATE_CODECOV=false
+          fi
+
+          if [[ ${{ inputs.should-update-codecov }} == false ]]; then
+            SHOULD_UPDATE_CODECOV=false
+          fi
+
+          echo "::set-output name=should-update-codecov::$SHOULD_UPDATE_CODECOV"
+
+  update-codecov:
+    needs: [test]
+    if: ${{ needs.test.outputs.should-update-codecov == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # Note: "token" is not required for public repos
+          directory: ./coverage
+          verbose: true

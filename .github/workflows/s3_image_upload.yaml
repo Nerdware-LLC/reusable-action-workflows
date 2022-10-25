@@ -10,7 +10,10 @@ on:
         required: true
         type: string
       version-tag:
-        description: "The version tag to use for the Docker image (will extract from package.json if one is present)"
+        description: |
+          The version tag to use for the Docker image. If this value is
+          not provided, the version will be ascertained by using the
+          "version" value in a package.json file if one is present.
         required: false
         type: string
     secrets:
@@ -24,15 +27,13 @@ on:
         description: "The AWS region in which the S3 bucket is located"
         required: true
 
-env:
-  IMAGE_NAME: lambda-edge-secure-headers
+defaults:
+  run:
+    shell: bash
 
 jobs:
   upload_to_s3:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
 
     # permissions required to use aws-actions/configure-aws-credentials@v1
     permissions:

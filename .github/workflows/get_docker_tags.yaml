@@ -1,0 +1,65 @@
+name: Get Docker Tags
+
+# This Action outputs a JSON-formatted array of Docker tags.
+
+on:
+  workflow_call:
+    inputs:
+      tag-prefix:
+        description: |
+          A value to prefix all tags such as an image name or repo. For
+          example, if "tag-prefix" is "my-image", and "version-tag" is
+          "v1", the resultant final version-tag would be "my-image:v1".
+        required: true
+        type: string
+      version-tag:
+        description: |
+          The version tag to use for the Docker image. If this value is
+          not provided, the version will be ascertained by using the
+          "version" value in a package.json file if one is present.
+        required: false
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  get-docker-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      docker-tags: ${{ steps.get-docker-tags.outputs.docker-tags }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Get Docker Tags
+        id: get-docker-tags
+        run: |
+          IMAGE_TAGS=('latest')
+
+          REF="${GITHUB_REF#refs/*/}" && REF_TAG="${REF%/merge}"
+          [ "$REF_TAG" == 'main' ] && REF_TAG='prod';
+          [ "$REF_TAG" == 'next' ] && REF_TAG='staging';
+          tags+=("$REF_TAG")
+
+          if [ -n ${{ inputs.version-tag }} ]; then
+            VERSION_TAG="${{ inputs.version-tag }}"
+          elif [ -f ./package.json ]; then
+            VERSION_TAG="v$( jq '.version' < ./package.json | tr -d '"' )"
+          fi
+
+          [ -n $VERSION_TAG ] && IMAGE_TAGS+=("$VERSION_TAG")
+
+          IMAGE_TAGS=("${IMAGE_TAGS[@]/#/${{ inputs.tag-prefix }}:}")
+
+          # Initialize json var with opening bracket
+          IMAGE_TAGS_JSON='['
+
+          for tag in "${IMAGE_TAGS[@]}"; do
+            IMAGE_TAGS_JSON+="\"$tag\","
+          done
+
+          # Replace the last comma with a closing bracket
+          IMAGE_TAGS_JSON="${IMAGE_TAGS_JSON/%,/]}"
+
+          # Set the output
+          echo "::set-output name=docker-tags::$IMAGE_TAGS_JSON"

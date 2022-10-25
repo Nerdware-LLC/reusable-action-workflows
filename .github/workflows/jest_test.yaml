@@ -18,12 +18,13 @@ on:
         description: "Codecov token for private repo code coverage reports"
         required: false
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     outputs:
       should-update-codecov: ${{ steps.should-update-codecov.outputs.should-update-codecov }}
     steps:

@@ -25,8 +25,6 @@ defaults:
 jobs:
   test:
     runs-on: ubuntu-latest
-    outputs:
-      should-update-codecov: ${{ steps.should-update-codecov.outputs.should-update-codecov }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -86,12 +84,8 @@ jobs:
 
           echo "::set-output name=should-update-codecov::$SHOULD_UPDATE_CODECOV"
 
-  update-codecov:
-    needs: [test]
-    if: ${{ needs.test.outputs.should-update-codecov == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
       - name: Update Codecov
+        if: ${{ steps.should-update-codecov.outputs.should-update-codecov == true }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # Note: "token" is not required for public repos

@@ -25,6 +25,8 @@ defaults:
 jobs:
   test:
     runs-on: ubuntu-latest
+    outputs:
+      did-tests-succeed: ${{ steps.run-tests.outputs.did-tests-succeed }} # output provides an explicit named indicator
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -33,46 +35,20 @@ jobs:
 
       - run: npm install
       - name: Run Tests
-        id: tests
-        run: npm run test:ci
-
-      - name: Tests Succeeded ✅
-        if: ${{ success() }}
+        id: run-tests
         run: |
-          curl --request POST \
-            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            --header 'content-type: application/json' \
-            --data '{
-              "context": "tests",
-              "state": "success",
-              "description": "Tests passed",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }'
+          if npm run test:ci ; then
+            echo "::set-output name=did-tests-succeed::true"
+          else
+            echo "::set-output name=did-tests-succeed::false"
+          fi
 
-      - name: Tests Failed 🚨
-        if: ${{ failure() }}
-        run: |
-          curl --request POST \
-            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            --header 'content-type: application/json' \
-            --data '{
-              "context": "tests",
-              "state": "failure",
-              "description": "Tests failed",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }'
-
-      - name: Should Update Codecov?
-        id: should-update-codecov
-        run: |
-          # Start with 'true'
-          SHOULD_UPDATE_CODECOV=true
-
-          # SHOULD_UPDATE_CODECOV has 2 false conditions:
+          # Ascertain whether Codecov should/can be updated.
+          # SHOULD_UPDATE_CODECOV is true by default, with 2 false conditions:
           #   1. If the repo is private and secret.CODECOV_TOKEN was not provided.
           #   2. If input.should-update-codecov was explicitly set to false.
+
+          SHOULD_UPDATE_CODECOV=true
 
           if [[ ${{ github.repository.private }} == true && -z ${{ secrets.CODECOV_TOKEN }} ]]; then
             SHOULD_UPDATE_CODECOV=false
@@ -84,8 +60,29 @@ jobs:
 
           echo "::set-output name=should-update-codecov::$SHOULD_UPDATE_CODECOV"
 
+      - name: Update GitHub Commit Status
+        run: |
+          if [ ${{ steps.run-tests.outputs.did-tests-succeed }} == true ]; then
+            commit_status_state='success'
+            description='Tests passed'
+          else
+            commit_status_state='failure'
+            description='Tests failed'
+          fi
+
+          curl --request POST \
+            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'content-type: application/json' \
+            --data "{
+              \"context\": \"tests\",
+              \"state\": \"$commit_status_state\",
+              \"description\": \"$description\",
+              \"target_url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+            }"
+
       - name: Update Codecov
-        if: ${{ steps.should-update-codecov.outputs.should-update-codecov == true }}
+        if: ${{ steps.run-tests.outputs.should-update-codecov == true }}
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # Note: "token" is not required for public repos

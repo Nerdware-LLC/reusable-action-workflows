@@ -1,4 +1,4 @@
-name: Run Jest Tests
+name: Node Test
 
 on:
   workflow_call:
@@ -32,9 +32,9 @@ jobs:
           node-version: ${{ inputs.node-version }}
 
       - run: npm install
-      - name: Run Jest Tests
-        id: jest_tests
-        run: npm test:ci
+      - name: Run Tests
+        id: tests
+        run: npm run test:ci
 
       - name: Tests Succeeded ✅
         if: ${{ success() }}

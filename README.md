@@ -14,7 +14,7 @@ Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdw
 - [🚀 Available Workflows](#-available-workflows)
   - [ECR Image Push](#ecr-image-push)
   - [Get Docker Tags](#get-docker-tags)
-  - [Run Jest Tests](#run-jest-tests)
+  - [Node Test](#node-test)
   - [S3 Image Upload](#s3-image-upload)
   - [Semantic Release](#semantic-release)
 - [📖 Relevant GitHub Documentation](#-relevant-github-documentation)
@@ -53,12 +53,12 @@ Provided Tags:
 
 </div>
 
-### Run Jest Tests
+### Node Test
 
 <div style="padding-left:20px;">
 
-[jest_test.yaml](/.github/workflows/jest_test.yaml) <br>
-This Workflow runs Jest tests and optionally updates Codecov.
+[node_test.yaml](/.github/workflows/node_test.yaml) <br>
+This Workflow sets up NodeJS, runs `npm run test:ci`, updates the GitHub commit status, and optionally updates Codecov.
 
 > An npm script named `test:ci` must be present in the `package.json`.
 

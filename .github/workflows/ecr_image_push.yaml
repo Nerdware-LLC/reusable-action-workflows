@@ -23,6 +23,9 @@ on:
 jobs:
   push_to_ecr:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:

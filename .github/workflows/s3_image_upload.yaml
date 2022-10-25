@@ -30,6 +30,9 @@ env:
 jobs:
   upload_to_s3:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
 
     # permissions required to use aws-actions/configure-aws-credentials@v1
     permissions:

@@ -60,6 +60,8 @@ Provided Tags:
 [jest_test.yaml](/.github/workflows/jest_test.yaml) <br>
 This Workflow runs Jest tests and optionally updates Codecov.
 
+> An npm script named `test:ci` must be present in the `package.json`.
+
 </div>
 
 ### S3 Image Upload

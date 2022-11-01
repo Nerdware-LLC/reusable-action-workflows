@@ -52,7 +52,7 @@ jobs:
 
           SHOULD_UPDATE_CODECOV=true
 
-          if [[ ${{ github.repository.private }} == true && -z $CODECOV_TOKEN ]]; then
+          if [[ ${{ github.repository.private }} == true ]] && [[ -z $CODECOV_TOKEN ]]; then
             SHOULD_UPDATE_CODECOV=false
           fi
 

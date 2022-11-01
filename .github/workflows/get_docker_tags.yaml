@@ -62,4 +62,4 @@ jobs:
           IMAGE_TAGS_JSON="${IMAGE_TAGS_JSON/%,/]}"
 
           # Set the output
-          echo "::set-output name=docker-tags::$IMAGE_TAGS_JSON"
+          echo "docker-tags=$IMAGE_TAGS_JSON" >> $GITHUB_OUTPUT

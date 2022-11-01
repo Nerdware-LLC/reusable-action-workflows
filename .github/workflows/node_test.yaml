@@ -38,9 +38,9 @@ jobs:
         id: run-tests
         run: |
           if npm run test:ci ; then
-            echo "::set-output name=did-tests-succeed::true"
+            echo "did-tests-succeed=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=did-tests-succeed::false"
+            echo "did-tests-succeed=false" >> $GITHUB_OUTPUT
           fi
 
           # Ascertain whether Codecov should/can be updated.
@@ -58,7 +58,7 @@ jobs:
             SHOULD_UPDATE_CODECOV=false
           fi
 
-          echo "::set-output name=should-update-codecov::$SHOULD_UPDATE_CODECOV"
+          echo "should-update-codecov=$SHOULD_UPDATE_CODECOV" >> $GITHUB_OUTPUT
 
       - name: Update GitHub Commit Status
         run: |

@@ -36,6 +36,8 @@ jobs:
       - run: npm install
       - name: Run Tests
         id: run-tests
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           if npm run test:ci ; then
             echo "did-tests-succeed=true" >> $GITHUB_OUTPUT
@@ -50,7 +52,7 @@ jobs:
 
           SHOULD_UPDATE_CODECOV=true
 
-          if [[ ${{ github.repository.private }} == true && -z ${{ secrets.CODECOV_TOKEN }} ]]; then
+          if [[ ${{ github.repository.private }} == true && -z $CODECOV_TOKEN ]]; then
             SHOULD_UPDATE_CODECOV=false
           fi
 

@@ -40,8 +40,10 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           if npm run test:ci ; then
+            echo "DID TESTS SUCCEED? YES"
             echo "did-tests-succeed=true" >> $GITHUB_OUTPUT
           else
+            echo "DID TESTS SUCCEED? NO"
             echo "did-tests-succeed=false" >> $GITHUB_OUTPUT
           fi
 
@@ -60,14 +62,18 @@ jobs:
             SHOULD_UPDATE_CODECOV=false
           fi
 
+          echo "SHOULD UPDATE CODECOV? $SHOULD_UPDATE_CODECOV"
+
           echo "should-update-codecov=$SHOULD_UPDATE_CODECOV" >> $GITHUB_OUTPUT
 
       - name: Update GitHub Commit Status
         run: |
           if [ ${{ steps.run-tests.outputs.did-tests-succeed }} == true ]; then
+            echo "(next step) TESTS IN PREVIOUS STEP WERE SUCCESSFUL."
             commit_status_state='success'
             description='Tests passed'
           else
+            echo "(next step) TESTS IN PREVIOUS STEP DID NOT SUCCEED."
             commit_status_state='failure'
             description='Tests failed'
           fi

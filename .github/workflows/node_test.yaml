@@ -13,13 +13,13 @@ on:
         required: false
         type: string
       should-update-codecov:
-        description: "Boolean indicating whether Codecov should be updated"
+        description: "Boolean indicating whether CodeCov should be updated"
         default: true
         required: false
         type: boolean
     secrets:
       CODECOV_TOKEN:
-        description: "Codecov token for private repo code coverage reports"
+        description: "CodeCov token for private repo code coverage reports"
         required: false
 
 defaults:
@@ -81,12 +81,17 @@ jobs:
           SHOULD_UPDATE_CODECOV=true
 
           if [[ ${{ github.event.repository.private }} == true && -z ${{ secrets.CODECOV_TOKEN }} ]]; then
+            echo "[DEBUG] WILL NOT UPDATE CODECOV (1)"
             SHOULD_UPDATE_CODECOV=false
           fi
 
           if [[ ${{ inputs.should-update-codecov }} == false ]]; then
+            echo "[DEBUG] WILL NOT UPDATE CODECOV (2)"
             SHOULD_UPDATE_CODECOV=false
           fi
+
+          echo "[DEBUG] SHOULD_UPDATE_CODECOV           = ${SHOULD_UPDATE_CODECOV}"
+          echo "[DEBUG] github.event.repository.private = ${{ github.event.repository.private }}"
 
           echo "should-update-codecov=$SHOULD_UPDATE_CODECOV" >> $GITHUB_OUTPUT
 

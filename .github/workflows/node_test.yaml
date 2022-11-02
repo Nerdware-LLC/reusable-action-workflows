@@ -111,10 +111,6 @@ jobs:
               \"target_url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
             }"
 
-      - name: PRINT should-update-codecov
-        run: |
-          echo "[DEBUG] steps.run-tests.outputs.should-update-codecov = ${{ steps.run-tests.outputs.should-update-codecov }}"
-
       - name: Update CodeCov
         if: ${{ steps.run-tests.outputs.should-update-codecov }} == true
         uses: codecov/codecov-action@v3

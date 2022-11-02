@@ -81,17 +81,12 @@ jobs:
           SHOULD_UPDATE_CODECOV=true
 
           if [[ ${{ github.event.repository.private }} == true && -z ${{ secrets.CODECOV_TOKEN }} ]]; then
-            echo "[DEBUG] WILL NOT UPDATE CODECOV (1)"
             SHOULD_UPDATE_CODECOV=false
           fi
 
           if [[ ${{ inputs.should-update-codecov }} == false ]]; then
-            echo "[DEBUG] WILL NOT UPDATE CODECOV (2)"
             SHOULD_UPDATE_CODECOV=false
           fi
-
-          echo "[DEBUG] SHOULD_UPDATE_CODECOV           = ${SHOULD_UPDATE_CODECOV}"
-          echo "[DEBUG] github.event.repository.private = ${{ github.event.repository.private }}"
 
           echo "should-update-codecov=$SHOULD_UPDATE_CODECOV" >> $GITHUB_OUTPUT
 
@@ -116,8 +111,12 @@ jobs:
               \"target_url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
             }"
 
-      - name: Update Codecov
-        if: ${{ steps.run-tests.outputs.should-update-codecov == true }}
+      - name: PRINT should-update-codecov
+        run: |
+          echo "[DEBUG] steps.run-tests.outputs.should-update-codecov = ${{ steps.run-tests.outputs.should-update-codecov }}"
+
+      - name: Update CodeCov
+        if: ${{ steps.run-tests.outputs.should-update-codecov }} == true
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # Note: "token" is not required for public repos

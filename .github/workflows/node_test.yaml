@@ -4,7 +4,11 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: "The NodeJS version to use"
+        description: |
+          The NodeJS version to use; if an explicit value is not provided, this
+          workflow will attempt to read "engines.node" from the project's package.json
+          if one is present in order to determine the NodeJS version to use. If a node
+          version is not specified in the file, node v16.17.0 will be used as a fallback.
         default: "16.17.0"
         required: false
         type: string
@@ -29,21 +33,43 @@ jobs:
       did-tests-succeed: ${{ steps.run-tests.outputs.did-tests-succeed }} # output provides an explicit named indicator
     steps:
       - uses: actions/checkout@v3
+      - id: get-node-version
+        run: |
+          NODE_VERSION=
+
+          if [ -n ${{ inputs.node-version }} ]; then
+            NODE_VERSION=${{ inputs.node-version }}
+          elif [ -f ./package.json ]; then
+
+            # jq will output 'null' if .engines.node isn't present
+            ENGINE_NODE="$( jq '.engines.node' ../package.json )"
+
+            # If a value is present and is not 'null', remove any quotation marks
+            # and/or semver chars and use the resultant value for the node version.
+
+            if [[ -n "$ENGINE_NODE" && "$ENGINE_NODE" != 'null' ]]; then
+              NODE_VERSION="$( sed -r 's/["^~<>= ]//g' <<< "$ENGINE_NODE" )"
+            fi
+          fi
+
+          # Final fallback value if still unset
+          if [ -z "$NODE_VERSION" ]; then
+            NODE_VERSION='16.17.0'
+          fi
+
+          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ inputs.node-version }}
+          node-version: ${{ steps.get-node-version.outputs.node-version }}
 
-      - run: npm install
+      - run: npm ci
       - name: Run Tests
         id: run-tests
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: |
           if npm run test:ci ; then
-            echo "DID TESTS SUCCEED? YES"
             echo "did-tests-succeed=true" >> $GITHUB_OUTPUT
           else
-            echo "DID TESTS SUCCEED? NO"
             echo "did-tests-succeed=false" >> $GITHUB_OUTPUT
           fi
 
@@ -54,7 +80,7 @@ jobs:
 
           SHOULD_UPDATE_CODECOV=true
 
-          if [[ ${{ github.repository.private }} == true ]] && [[ -z $CODECOV_TOKEN ]]; then
+          if [[ ${{ github.event.repository.private }} == true && -z ${{ secrets.CODECOV_TOKEN }} ]]; then
             SHOULD_UPDATE_CODECOV=false
           fi
 
@@ -62,18 +88,14 @@ jobs:
             SHOULD_UPDATE_CODECOV=false
           fi
 
-          echo "SHOULD UPDATE CODECOV? $SHOULD_UPDATE_CODECOV"
-
           echo "should-update-codecov=$SHOULD_UPDATE_CODECOV" >> $GITHUB_OUTPUT
 
       - name: Update GitHub Commit Status
         run: |
           if [ ${{ steps.run-tests.outputs.did-tests-succeed }} == true ]; then
-            echo "(next step) TESTS IN PREVIOUS STEP WERE SUCCESSFUL."
             commit_status_state='success'
             description='Tests passed'
           else
-            echo "(next step) TESTS IN PREVIOUS STEP DID NOT SUCCEED."
             commit_status_state='failure'
             description='Tests failed'
           fi

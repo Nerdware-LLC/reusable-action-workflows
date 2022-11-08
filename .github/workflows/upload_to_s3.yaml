@@ -1,0 +1,102 @@
+name: Upload to S3
+
+# Runs `npm run build` and uploads the resultant package to an S3 bucket.
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      node-version:
+        description: |
+          The NodeJS version to use; if an explicit value is not provided, this
+          workflow will attempt to read "engines.node" from the project's package.json
+          if one is present in order to determine the NodeJS version to use. If a node
+          version is not specified in the file, node v16.17.0 will be used as a fallback.
+        default: "16.17.0"
+        required: false
+        type: string
+      s3-target-dest:
+        description: |
+          The destination target in which to upload the resultant build. This must include
+          the bucket name, and may optionally also contain a subdirectory path (e.g.,
+          "my_foo_bucket/production"). This path value should NOT end with a trailing slash.
+        required: true
+        type: string
+      s3-sync-command-params:
+        description: |
+          The options to use with the `aws s3 sync ...` operation. For example, if the target
+          bucket uses default SSE encryption and has standard ACL protections, this input would
+          at least need to include the params "--acl bucket-owner-full-control --sse AES256".
+          For more info on s3-sync command options, see the documentation at the link below.
+          https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html#options
+        required: true
+        type: string
+    secrets:
+      OIDC_GITHUB_ROLE_ARN:
+        description: "The ARN of the AWS IAM Role for the GitHub OpenID Connect provider"
+        required: true
+      S3_BUCKET_REGION:
+        description: "The AWS region in which the target S3 bucket is located."
+        required: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build_and_upload:
+    runs-on: ubuntu-latest
+
+    # permissions required to use aws-actions/configure-aws-credentials@v1
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+      - id: get-node-version
+        run: |
+          NODE_VERSION=
+
+          if [ -n ${{ inputs.node-version }} ]; then
+            NODE_VERSION=${{ inputs.node-version }}
+          elif [ -f ./package.json ]; then
+
+            # jq will output 'null' if .engines.node isn't present
+            ENGINE_NODE="$( jq '.engines.node' ../package.json )"
+
+            # If a value is present and is not 'null', remove any quotation marks
+            # and/or semver chars and use the resultant value for the node version.
+
+            if [[ -n "$ENGINE_NODE" && "$ENGINE_NODE" != 'null' ]]; then
+              NODE_VERSION="$( sed -r 's/["^~<>= ]//g' <<< "$ENGINE_NODE" )"
+            fi
+          fi
+
+          # Final fallback value if still unset
+          if [ -z "$NODE_VERSION" ]; then
+            NODE_VERSION='16.17.0'
+          fi
+
+          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.get-node-version.outputs.node-version }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
+          aws-region: ${{ secrets.S3_BUCKET_REGION }}
+
+      - name: Build & Upload
+        run: |
+          npm ci --omit=dev
+
+          npm run build
+
+          # shellcheck disable=SC2086 # <-- Word splitting intended.
+          aws s3 sync ./build "s3://${{ inputs.s3-target-dest }}" $( echo ${{ inputs.s3-sync-command-params }} )
+
+          rm -r ./build

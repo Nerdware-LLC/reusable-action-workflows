@@ -17,6 +17,7 @@ Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdw
   - [Node Test](#node-test)
   - [S3 Image Upload](#s3-image-upload)
   - [Semantic Release](#semantic-release)
+  - [Upload to S3](#upload-to-s3)
 - [📖 Relevant GitHub Documentation](#-relevant-github-documentation)
 - [📝 License](#-license)
 - [💬 Contact](#-contact)
@@ -81,6 +82,15 @@ This Workflow builds a Docker image as a ZIP archive and then uploads it to an S
 
 [release.yaml](/.github/workflows/release.yaml) <br>
 This Workflow uses Semantic Release to publish a GitHub release.
+
+</div>
+
+### Upload to S3
+
+<div style="padding-left:20px;">
+
+[upload_to_s3.yaml](/.github/workflows/upload_to_s3.yaml) <br>
+Creates a NodeJS build via `npm run build`, and then uploads the resultant package to an S3 bucket using the `aws s3 sync ...` command.
 
 </div>
 

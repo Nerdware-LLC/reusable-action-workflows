@@ -88,7 +88,3 @@ jobs:
 #   branch push     refs/heads/<branch_name>        <branch_name>
 #   pr              refs/pull/<pr_number>/merge     <pr_number>
 #   release         refs/tags/<release_tag>         <release_tag>
-#
-# If the action was triggered by a RELEASE event on the "main" or "next" branches, the
-# REF_TAG is converted into "prod" or "staging" respectively, and a VERSION_TAG is
-# added using the value of the "version" field in the package.json.

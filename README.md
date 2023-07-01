@@ -1,17 +1,14 @@
-<br>
 <div align="center">
-
   <a href="https://github.com/Nerdware-LLC">
     <img src="https://github.com/Nerdware-LLC/.github/blob/main/profile/nerdware_logo.png" height="120" alt="Nerdware_Logo" />
   </a>
-
   <h1>Reusable GitHub Actions Workflows</h1>
-
-Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdware](https://github.com/Nerdware-LLC)
-
+  
+  Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdware](https://github.com/Nerdware-LLC)
+  
 </div>
 
-- [🚀 Available Workflows](#-available-workflows)
+- 🚀 Available Workflows:
   - [ECR Image Push](#ecr-image-push)
   - [Get Docker Tags](#get-docker-tags)
   - [Node Test](#node-test)
@@ -22,29 +19,39 @@ Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdw
 - [📝 License](#-license)
 - [💬 Contact](#-contact)
 
-## 🚀 Available Workflows
+---
 
-### ECR Image Push
+## [ECR Image Push](/.github/workflows/ecr_image_push.yaml)
 
-<div style="padding-left:20px;">
+This workflow builds a Docker image using [BuildKit](https://github.com/moby/buildkit) and uploads it to an ECR repo.
 
-[ecr_image_push.yaml](/.github/workflows/ecr_image_push.yaml) <br>
-This Workflow builds a Docker image and uploads it to an ECR repo.
+**Requirements:**
+- You must have an existing ECR image repo.
+- The calling workflow must specify an [OpenID Connect IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) ARN with which the relevant API calls can be authenticated. Support for other forms of authentication may be added in the future.
 
-</div>
+**Usage:**
+```yaml
+jobs:
+  my_job_using_ecr_image_push:
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/ecr_image_push.yaml@v1.1.0 # or "@main"
+    secrets:
+      OIDC_GITHUB_ROLE_ARN: ${{ secrets.OIDC_GITHUB_ROLE_ARN }} 
+      AWS_ECR_PRIVATE_REPO: ${{ secrets.AWS_ECR_PRIVATE_REPO }}
+      AWS_ECR_REGION: ${{ secrets.AWS_ECR_REGION }}
+    permissions:
+      id-token: write
+      contents: read
+```
 
-### Get Docker Tags
+## [Get Docker Tags](/.github/workflows/get_docker_tags.yaml)
 
-<div style="padding-left:20px;">
+This workflow outputs a JSON-formatted array of three Docker tags which can be used in `docker build` and/or `docker tag` commands.
 
-[get_docker_tags.yaml](/.github/workflows/get_docker_tags.yaml) <br>
-This Workflow outputs a JSON-formatted array of Docker tags which can be used in `docker build` and/or `docker tag` commands.
-
-Provided Tags:
+In order, the tags provided in the output are as follows:
 
 1. "latest", a constant which this action always includes in the output.
-2. A "version" tag based either on the version-tag input OR the "version" property in a package.json, if one is present.
-3. A "ref" tag based on the variable component of the GITHUB_REF env var, the value of which depends on the type of event which triggered the Action run:
+2. A version tag based either on the version-tag input OR the "version" property in a package.json, if one is present.
+3. A ref tag based on the variable component of the GITHUB_REF env var, the value of which depends on the type of event which triggered the Action run:
 
    | EVENT        | REF                           | IMAGE TAG       |
    | :----------- | :---------------------------- | :-------------- |
@@ -52,51 +59,98 @@ Provided Tags:
    | pull request | `refs/pull/<pr_number>/merge` | `<pr_number>`   |
    | release      | `refs/tags/<release_tag>`     | `<release_tag>` |
 
-</div>
+**Usage:**
+```yaml
+jobs:
+  my_job_using_get_docker_tags:
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/get_docker_tags.yaml@v1.1.0 # or "@main"
+    with:
+      tag-prefix: my-image-name # required input
+      version-tag: v1.0.0 # optional input - defaults to the "version" specified in package.json
+```
 
-### Node Test
+## [Node Test](/.github/workflows/node_test.yaml)
 
-<div style="padding-left:20px;">
+This workflow sets up NodeJS, runs `npm run test:ci`, updates the GitHub commit status, and optionally updates [CodeCov](https://about.codecov.io/).
 
-[node_test.yaml](/.github/workflows/node_test.yaml) <br>
-This Workflow sets up NodeJS, runs `npm run test:ci`, updates the GitHub commit status, and optionally updates Codecov.
+**Requirements:**
+- An npm script named `test:ci` must be present in the `package.json`.
 
-> An npm script named `test:ci` must be present in the `package.json`.
+**Usage:**
+```yaml
+jobs:
+  my_job_using_node_test:
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/node_test.yaml@v1.1.0 # or "@main"
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # <-- Optional
+```
 
-</div>
+## [S3 Image Upload](/.github/workflows/s3_image_upload.yaml)
 
-### S3 Image Upload
+This workflow builds a Docker image as a ZIP archive and then uploads it to an S3 bucket.
 
-<div style="padding-left:20px;">
+**Requirements:**
+- You must have an existing S3 bucket with [_default SSE encryption_](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html). Support for buckets encrypted with a user-managed KMS key may be added in the future.
+- The calling workflow must specify an [OpenID Connect IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) ARN with which the relevant API calls can be authenticated. Support for other forms of authentication may be added in the future.
 
-[s3_image_upload.yaml](/.github/workflows/s3_image_upload.yaml) <br>
-This Workflow builds a Docker image as a ZIP archive and then uploads it to an S3 bucket.
+**Usage:**
+```yaml
+jobs:
+  my_job_using_s3_image_upload:
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/s3_image_upload.yaml@v1.1.0 # or "@main"
+    with:
+      image-name: foo-image-name
+    secrets:
+      OIDC_GITHUB_ROLE_ARN: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
+      S3_BUCKET_DEST: ${{ secrets.S3_BUCKET_DEST }}
+      S3_BUCKET_REGION: ${{ secrets.S3_BUCKET_REGION }}
+```
 
-> Currently only buckets with _default SSE encryption_ are supported. Support for buckets encrypted with a user-managed KMS key may be added in the future.
+## [Semantic Release](/.github/workflows/release.yaml)
 
-</div>
+This workflow uses [Semantic Release](https://github.com/semantic-release/semantic-release) to publish a GitHub release.
 
-### Semantic Release
+**Requirements:**
+- Your repo must include a [Semantic Release config file](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration).
+- The calling workflow must provide an auth token granting push access to the project Git repo. [Semantic Release requires these permissions in order to create git tags](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/ci-configuration.md#authentication).
 
-<div style="padding-left:20px;">
+**Usage:**
+```yaml
+jobs:
+  my_job_using_release:
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/release.yaml@v1.1.0 # or "@main"
+    secrets:
+      SEMANTIC_RELEASE_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+```
 
-[release.yaml](/.github/workflows/release.yaml) <br>
-This Workflow uses Semantic Release to publish a GitHub release.
+## [Upload to S3](/.github/workflows/upload_to_s3.yaml)
 
-</div>
+This workflow creates a NodeJS build via `npm run build`, and then uploads the resultant package to an S3 bucket using the `aws s3 sync ...` command.
 
-### Upload to S3
+**Requirements:**
+- Your project's repo root must include a `package.json` file with a defined `build` script.
+- You must have an existing S3 bucket with [_default SSE encryption_](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html). Support for buckets encrypted with a user-managed KMS key may be added in the future.
+- The calling workflow must specify an [OpenID Connect IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) ARN with which the relevant API calls can be authenticated. Support for other forms of authentication may be added in the future.
 
-<div style="padding-left:20px;">
-
-[upload_to_s3.yaml](/.github/workflows/upload_to_s3.yaml) <br>
-Creates a NodeJS build via `npm run build`, and then uploads the resultant package to an S3 bucket using the `aws s3 sync ...` command.
-
-</div>
+**Usage:**
+```yaml
+jobs:
+  my_job_using_upload_to_s3:
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/upload_to_s3.yaml@v1.1.0 # or "@main"
+    with:
+      s3-target-dest: my_foo_bucket/production
+      s3-sync-command-params: "--acl bucket-owner-full-control --sse AES256"
+      # The above s3-sync command params would be sufficient for a bucket with default SSE encryption
+      # and standard ACL protections. For more info on s3-sync command options, see the documentation
+      # at https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html#options
+    secrets:
+      OIDC_GITHUB_ROLE_ARN: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
+      S3_BUCKET_REGION: ${{ secrets.S3_BUCKET_REGION }}
+```
 
 ---
 
-## 📖 Relevant GitHub Documentation
+### 📖 Relevant GitHub Documentation
 
 - https://docs.github.com/en/actions/using-workflows/reusing-workflows
 

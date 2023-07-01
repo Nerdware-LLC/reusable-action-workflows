@@ -11,8 +11,8 @@ on:
           The NodeJS version to use; if an explicit value is not provided, this
           workflow will attempt to read "engines.node" from the project's package.json
           if one is present in order to determine the NodeJS version to use. If a node
-          version is not specified in the file, node v16.17.0 will be used as a fallback.
-        default: "16.17.0"
+          version is not specified in the file, node v18.16.1 will be used as a fallback.
+        default: "18.16.1"
         required: false
         type: string
       s3-target-dest:
@@ -75,7 +75,7 @@ jobs:
 
           # Final fallback value if still unset
           if [ -z "$NODE_VERSION" ]; then
-            NODE_VERSION='16.17.0'
+            NODE_VERSION='18.16.1'
           fi
 
           echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT

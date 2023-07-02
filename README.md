@@ -83,8 +83,12 @@ jobs:
   my_job_using_node_test:
     uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/node_test.yaml@v1.1.0 # or "@main"
     with:
-      env-vars: "MY_ENV_VAR=my-env-var-value FOO=bar BAZ=qux"
-      test-script: "test:ci" # Resultant test command will be `npm run test:ci`
+      test-script: "test:ci"
+      # Note the >- below; this block-chomping indicator will rm all newline chars, and separate each line by a space.
+      env-vars: >-
+        MY_ENV_VAR=my-env-var-value
+        FOO=bar
+        BAZ=qux
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # <-- Optional
 ```

@@ -3,6 +3,22 @@ name: Node Test
 on:
   workflow_call:
     inputs:
+      env-vars:
+        description: |
+          This input allows arbitrary environment variables to be passed into this
+          workflow (called workflows do not inherit the "env" context). Provide this
+          input as a string formatted as a space-separated list of key-value pairs
+          (e.g., "FOO=bar BAZ=qux"). All env-vars are masked before usage. At this
+          time, neither keys nor values may contain spaces, but support for spaces in
+          values may be added in the future.
+        required: false
+        type: string
+      test-script:
+        description: |
+          The test script to run (e.g., "test:ci" will result in `npm run test:ci`).
+        default: "test:ci"
+        required: false
+        type: string
       node-version:
         description: |
           The NodeJS version to use; if an explicit value is not provided, this
@@ -63,17 +79,25 @@ jobs:
         with:
           node-version: ${{ steps.get-node-version.outputs.node-version }}
 
-      - run: npm ci
       - name: Run Tests
         id: run-tests
         run: |
-          if npm run test:ci ; then
+          # PARSE, MASK, AND EXPORT ENV VARS
+          for env_var_kv_pair in ${{ inputs.env-vars }}; do
+            read -r key value <<< "${env_var_kv_pair/=/ }"
+            echo "::add-mask::$key"
+            export $key="$value"
+          done
+
+          npm ci
+
+          if npm run ${{ inputs.test-script }} ; then
             echo "did-tests-succeed=true" >> $GITHUB_OUTPUT
           else
             echo "did-tests-succeed=false" >> $GITHUB_OUTPUT
           fi
 
-          # Ascertain whether Codecov should/can be updated.
+          # Ascertain whether CodeCov should/can be updated.
           # SHOULD_UPDATE_CODECOV is true by default, with 2 false conditions:
           #   1. If the repo is private and secret.CODECOV_TOKEN was not provided.
           #   2. If input.should-update-codecov was explicitly set to false.

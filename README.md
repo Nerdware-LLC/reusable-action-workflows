@@ -3,9 +3,9 @@
     <img src="https://github.com/Nerdware-LLC/.github/blob/main/profile/nerdware_logo.png" height="120" alt="Nerdware_Logo" />
   </a>
   <h1>Reusable GitHub Actions Workflows</h1>
-  
-  Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdware](https://github.com/Nerdware-LLC)
-  
+
+Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdware](https://github.com/Nerdware-LLC)
+
 </div>
 
 - 🚀 Available Workflows:
@@ -26,16 +26,18 @@
 This workflow builds a Docker image using [BuildKit](https://github.com/moby/buildkit) and uploads it to an ECR repo.
 
 **Requirements:**
+
 - You must have an existing ECR image repo.
 - The calling workflow must specify an [OpenID Connect IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) ARN with which the relevant API calls can be authenticated. Support for other forms of authentication may be added in the future.
 
 **Usage:**
+
 ```yaml
 jobs:
   my_job_using_ecr_image_push:
     uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/ecr_image_push.yaml@v1.1.0 # or "@main"
     secrets:
-      OIDC_GITHUB_ROLE_ARN: ${{ secrets.OIDC_GITHUB_ROLE_ARN }} 
+      OIDC_GITHUB_ROLE_ARN: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
       AWS_ECR_PRIVATE_REPO: ${{ secrets.AWS_ECR_PRIVATE_REPO }}
       AWS_ECR_REGION: ${{ secrets.AWS_ECR_REGION }}
     permissions:
@@ -60,6 +62,7 @@ In order, the tags provided in the output are as follows:
    | release      | `refs/tags/<release_tag>`     | `<release_tag>` |
 
 **Usage:**
+
 ```yaml
 jobs:
   my_job_using_get_docker_tags:
@@ -71,16 +74,17 @@ jobs:
 
 ## [Node Test](/.github/workflows/node_test.yaml)
 
-This workflow sets up NodeJS, runs `npm run test:ci`, updates the GitHub commit status, and optionally updates [CodeCov](https://about.codecov.io/).
-
-**Requirements:**
-- An npm script named `test:ci` must be present in the `package.json`.
+This workflow sets up NodeJS, runs your `test-script` (default: `test:ci`), updates the GitHub commit status, and optionally updates [CodeCov](https://about.codecov.io/). The input `env-vars` is a string formatted as a space-separated list of environment variables to be set in the workflow; this is a workaround to the limitation that [the `env` context in caller workflows is not propagated to called workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations). The input `test-script` is the name of the npm script to run.
 
 **Usage:**
+
 ```yaml
 jobs:
   my_job_using_node_test:
     uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/node_test.yaml@v1.1.0 # or "@main"
+    with:
+      env-vars: "MY_ENV_VAR=my-env-var-value FOO=bar BAZ=qux"
+      test-script: "test:ci" # Resultant test command will be `npm run test:ci`
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }} # <-- Optional
 ```
@@ -90,10 +94,12 @@ jobs:
 This workflow builds a Docker image as a ZIP archive and then uploads it to an S3 bucket.
 
 **Requirements:**
+
 - You must have an existing S3 bucket with [_default SSE encryption_](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html). Support for buckets encrypted with a user-managed KMS key may be added in the future.
 - The calling workflow must specify an [OpenID Connect IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) ARN with which the relevant API calls can be authenticated. Support for other forms of authentication may be added in the future.
 
 **Usage:**
+
 ```yaml
 jobs:
   my_job_using_s3_image_upload:
@@ -111,10 +117,12 @@ jobs:
 This workflow uses [Semantic Release](https://github.com/semantic-release/semantic-release) to publish a GitHub release.
 
 **Requirements:**
+
 - Your repo must include a [Semantic Release config file](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration).
 - The calling workflow must provide an auth token granting push access to the project Git repo. [Semantic Release requires these permissions in order to create git tags](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/ci-configuration.md#authentication).
 
 **Usage:**
+
 ```yaml
 jobs:
   my_job_using_release:
@@ -128,11 +136,13 @@ jobs:
 This workflow creates a NodeJS build via `npm run build`, and then uploads the resultant package to an S3 bucket using the `aws s3 sync ...` command.
 
 **Requirements:**
+
 - Your project's repo root must include a `package.json` file with a defined `build` script.
 - You must have an existing S3 bucket with [_default SSE encryption_](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-encryption.html). Support for buckets encrypted with a user-managed KMS key may be added in the future.
 - The calling workflow must specify an [OpenID Connect IAM role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) ARN with which the relevant API calls can be authenticated. Support for other forms of authentication may be added in the future.
 
 **Usage:**
+
 ```yaml
 jobs:
   my_job_using_upload_to_s3:

@@ -11,8 +11,8 @@ on:
           The NodeJS version to use. If this input is not provided, this workflow
           will default to the value of "engines.node" in the package.json. If that
           value is not provided, node "v18.16.1" will be used as a fallback.
-        default: "18.16.1"
         required: false
+        default: "18.16.1"
         type: string
       s3-target-dest:
         description: |
@@ -30,7 +30,8 @@ on:
           "--acl bucket-owner-full-control --sse AES256". For more info on s3-sync
           command options, see the documentation at the link below.
           https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html#options
-        required: true
+        required: false
+        default: "--acl bucket-owner-full-control --sse AES256"
         type: string
     secrets:
       OIDC_GITHUB_ROLE_ARN:

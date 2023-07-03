@@ -76,6 +76,9 @@ jobs:
 
 This workflow sets up NodeJS, runs your `test-script` (default: `test:ci`), updates the GitHub commit status, and optionally updates [CodeCov](https://about.codecov.io/). The input `env-vars` is a string formatted as a space-separated list of environment variables to be set in the workflow; this is a workaround to the limitation that [the `env` context in caller workflows is not propagated to called workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations). The input `test-script` is the name of the npm script to run.
 
+**Artifacts:**
+If your `test-script` creates coverage reports at `<repo-root>/coverage`, the coverage dir will be uploaded as an artifact named `coverage-reports`. This artifact can be downloaded in a subsequent step using the [download-artifact](https://github.com/actions/download-artifact) action. To disable this behavior, set the input `should-upload-coverage-artifacts` to `false`.
+
 **Usage:**
 
 ```yaml

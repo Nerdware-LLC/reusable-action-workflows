@@ -6,25 +6,27 @@ on:
   workflow_call:
     inputs:
       image-name:
-        description: "The name of the Docker image; this is also used as the ZIP file name"
+        description: |
+          The name of the Docker image; this is also used as the ZIP file name.
         required: true
         type: string
       version-tag:
         description: |
-          The version tag to use for the Docker image. If this value is
-          not provided, the version will be ascertained by using the
-          "version" value in a package.json file if one is present.
+          The version tag to use for the Docker image. If this input is not
+          provided, the "version" specified in the package.json will be used.
         required: false
         type: string
     secrets:
       OIDC_GITHUB_ROLE_ARN:
-        description: "The ARN of the AWS IAM Role for the GitHub OpenID Connect provider"
+        description: |
+          The ARN of the AWS IAM Role for the GitHub OpenID Connect provider.
         required: true
       S3_BUCKET_DEST:
-        description: "The S3 bucket destination for the image (e.g., 's3://foo-bucket/lambda-edge-images')"
+        description: |
+          The S3 bucket destination for the image (e.g., 's3://foo-bucket/lambda-edge-images').
         required: true
       S3_BUCKET_REGION:
-        description: "The AWS region in which the S3 bucket is located"
+        description: "The AWS region in which the S3 bucket is located."
         required: true
 
 defaults:

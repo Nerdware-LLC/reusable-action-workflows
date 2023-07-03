@@ -8,26 +8,27 @@ on:
     inputs:
       node-version:
         description: |
-          The NodeJS version to use; if an explicit value is not provided, this
-          workflow will attempt to read "engines.node" from the project's package.json
-          if one is present in order to determine the NodeJS version to use. If a node
-          version is not specified in the file, node v18.16.1 will be used as a fallback.
+          The NodeJS version to use. If this input is not provided, this workflow
+          will default to the value of "engines.node" in the package.json. If that
+          value is not provided, node "v18.16.1" will be used as a fallback.
         default: "18.16.1"
         required: false
         type: string
       s3-target-dest:
         description: |
-          The destination target in which to upload the resultant build. This must include
-          the bucket name, and may optionally also contain a subdirectory path (e.g.,
-          "my_foo_bucket/production"). This path value should NOT end with a trailing slash.
+          The destination target in which to upload the resultant build. This must
+          include the bucket name, and may optionally also contain a subdirectory
+          path (e.g., "my_foo_bucket/production"). This path value should NOT end
+          with a trailing slash.
         required: true
         type: string
       s3-sync-command-params:
         description: |
-          The options to use with the `aws s3 sync ...` operation. For example, if the target
-          bucket uses default SSE encryption and has standard ACL protections, this input would
-          at least need to include the params "--acl bucket-owner-full-control --sse AES256".
-          For more info on s3-sync command options, see the documentation at the link below.
+          The options to use with the `aws s3 sync ...` operation. For example,
+          if the target bucket uses default SSE encryption and has standard ACL
+          protections, this input would at least need to include the params
+          "--acl bucket-owner-full-control --sse AES256". For more info on s3-sync
+          command options, see the documentation at the link below.
           https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html#options
         required: true
         type: string

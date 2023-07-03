@@ -7,9 +7,8 @@ on:
     inputs:
       version-tag:
         description: |
-          The version tag to use for the Docker image. If this value is
-          not provided, the version will be ascertained by using the
-          "version" value in a package.json file if one is present.
+          The version tag to use for the Docker image. If this value is not
+          provided, the "version" specified in the package.json will be used.
         required: false
         type: string
     secrets:

@@ -5,12 +5,12 @@ on:
     inputs:
       env-vars:
         description: |
-          This input allows arbitrary environment variables to be passed into this
-          workflow (called workflows do not inherit the "env" context). Provide this
-          input as a string formatted as a space-separated list of key-value pairs
-          (e.g., "FOO=bar BAZ=qux"). All env-vars are masked before usage. At this
-          time, neither keys nor values may contain spaces, but support for spaces in
-          values may be added in the future.
+          This input allows arbitrary environment variables to be passed into
+          this workflow (called workflows do not inherit the "env" context).
+          Provide this input as a string formatted as a space-separated list of
+          key-value pairs (e.g., "FOO=bar BAZ=qux"). All env-vars are masked
+          before usage. At this time, neither keys nor values may contain
+          spaces, but support for spaces in values may be added in the future.
         required: false
         type: string
       test-script:
@@ -22,9 +22,10 @@ on:
       node-version:
         description: |
           The NodeJS version to use; if an explicit value is not provided, this
-          workflow will attempt to read "engines.node" from the project's package.json
-          if one is present in order to determine the NodeJS version to use. If a node
-          version is not specified in the file, node v18.16.1 will be used as a fallback.
+          workflow will attempt to read "engines.node" from the package.json
+          file if one is present in order to determine the NodeJS version to use.
+          If a node version is not specified in the file, node v18.16.1 will be
+          used as a fallback.
         default: "18.16.1"
         required: false
         type: string

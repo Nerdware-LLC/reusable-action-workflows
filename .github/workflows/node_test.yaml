@@ -33,10 +33,16 @@ on:
         default: true
         required: false
         type: boolean
+    ############################################################################
     secrets:
       CODECOV_TOKEN:
         description: "CodeCov token for private repo code coverage reports"
         required: false
+    ############################################################################
+    ouputs:
+      did-tests-succeed:
+        description: "Boolean indicating whether tests succeeded"
+        value: ${{ jobs.test.outputs.did-tests-succeed }}
 
 defaults:
   run:

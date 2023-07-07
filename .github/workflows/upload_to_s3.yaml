@@ -6,6 +6,16 @@ on:
   workflow_dispatch:
   workflow_call:
     inputs:
+      env-vars:
+        description: |
+          This input allows arbitrary environment variables to be passed into
+          this workflow (called workflows do not inherit the "env" context).
+          Provide this input as a string formatted as a space-separated list of
+          key-value pairs (e.g., "FOO=bar BAZ=qux"). All env-vars are masked
+          before usage. At this time, neither keys nor values may contain
+          spaces, but support for spaces in values may be added in the future.
+        required: false
+        type: string
       node-version:
         description: |
           The NodeJS version to use. If this input is not provided, this workflow
@@ -56,6 +66,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - id: get-node-version
         run: |
           NODE_VERSION=
@@ -94,11 +105,16 @@ jobs:
 
       - name: Build & Upload
         run: |
-          npm ci --omit=dev
+          # PARSE, MASK, AND EXPORT ENV VARS
+          for env_var_kv_pair in ${{ inputs.env-vars }}; do
+            read -r key value <<< "${env_var_kv_pair/=/ }"
+            echo "::add-mask::$key"
+            export $key="$value"
+          done
+
+          npm ci
 
           npm run build
 
           # shellcheck disable=SC2086 # <-- Word splitting intended.
           aws s3 sync ./build "s3://${{ inputs.s3-target-dest }}" $( echo ${{ inputs.s3-sync-command-params }} )
-
-          rm -r ./build

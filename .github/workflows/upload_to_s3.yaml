@@ -1,4 +1,4 @@
-name: Upload to S3
+name: Upload Build to S3
 
 # Runs `npm run build` and uploads the resultant package to an S3 bucket.
 
@@ -8,12 +8,9 @@ on:
     inputs:
       env-vars:
         description: |
-          This input allows arbitrary environment variables to be passed into
-          this workflow (called workflows do not inherit the "env" context).
-          Provide this input as a string formatted as a space-separated list of
-          key-value pairs (e.g., "FOO=bar BAZ=qux"). All env-vars are masked
-          before usage. At this time, neither keys nor values may contain
-          spaces, but support for spaces in values may be added in the future.
+          Arbitrary environment variables set for the build. Provide this input
+          as a string formatted as a space-separated list of key-value pairs
+          (e.g., "FOO=bar BAZ=qux"). All env-vars are masked before usage.
         required: false
         type: string
       node-version:
@@ -34,15 +31,12 @@ on:
         type: string
       s3-sync-command-params:
         description: |
-          The options to use with the `aws s3 sync ...` operation. For example,
-          if the target bucket uses default SSE encryption and has standard ACL
-          protections, this input would at least need to include the params
-          "--acl bucket-owner-full-control --sse AES256". For more info on s3-sync
-          command options, see the documentation at the link below.
+          The options to use with the `aws s3 sync` operation. sync command docs:
           https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html#options
         required: false
         default: "--acl bucket-owner-full-control --sse AES256"
         type: string
+
     secrets:
       OIDC_GITHUB_ROLE_ARN:
         description: "The ARN of the AWS IAM Role for the GitHub OpenID Connect provider"
@@ -50,6 +44,12 @@ on:
       S3_BUCKET_REGION:
         description: "The AWS region in which the target S3 bucket is located."
         required: true
+      env-vars:
+        description: |
+          Arbitrary environment variables set for the build. Provide this secret
+          as a string formatted as a space-separated list of key-value pairs
+          (e.g., "FOO=bar BAZ=qux"). All env-vars are masked before usage.
+        required: false
 
 defaults:
   run:
@@ -106,7 +106,7 @@ jobs:
       - name: Build & Upload
         run: |
           # PARSE, MASK, AND EXPORT ENV VARS
-          for env_var_kv_pair in ${{ inputs.env-vars }}; do
+          for env_var_kv_pair in ${{ inputs.env-vars }} ${{ secrets.env-vars }}; do
             read -r key value <<< "${env_var_kv_pair/=/ }"
             echo "::add-mask::$key"
             export $key="$value"

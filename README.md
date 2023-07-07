@@ -155,7 +155,6 @@ jobs:
   my_job_using_upload_to_s3:
     uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/upload_to_s3.yaml@v1.1.0 # or "@main"
     with:
-      s3-target-dest: my_foo_bucket/production
       s3-sync-command-params: "--acl bucket-owner-full-control --sse AES256"
       # The above s3-sync command params would be sufficient for a bucket with default SSE encryption
       # and standard ACL protections. For more info on s3-sync command options, see the documentation
@@ -163,6 +162,7 @@ jobs:
     secrets:
       OIDC_GITHUB_ROLE_ARN: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
       S3_BUCKET_REGION: ${{ secrets.S3_BUCKET_REGION }}
+      S3_UPLOAD_PATH: ${{ secrets.S3_UPLOAD_PATH }} # my_foo_bucket/production
 ```
 
 ---

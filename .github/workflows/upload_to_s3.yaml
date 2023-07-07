@@ -21,14 +21,6 @@ on:
         required: false
         default: "18.16.1"
         type: string
-      s3-target-dest:
-        description: |
-          The destination target in which to upload the resultant build. This must
-          include the bucket name, and may optionally also contain a subdirectory
-          path (e.g., "my_foo_bucket/production"). This path value should NOT end
-          with a trailing slash.
-        required: true
-        type: string
       s3-sync-command-params:
         description: |
           The options to use with the `aws s3 sync` operation. sync command docs:
@@ -43,6 +35,12 @@ on:
         required: true
       S3_BUCKET_REGION:
         description: "The AWS region in which the target S3 bucket is located."
+        required: true
+      S3_UPLOAD_PATH:
+        description: |
+          Where to upload the resultant build. This must include the bucket name, and
+          may optionally contain a subdirectory path (e.g., "my_foo_bucket/production").
+          Do NOT end with a trailing slash.
         required: true
       env-vars:
         description: |
@@ -97,8 +95,7 @@ jobs:
         with:
           node-version: ${{ steps.get-node-version.outputs.node-version }}
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
           aws-region: ${{ secrets.S3_BUCKET_REGION }}
@@ -116,5 +113,6 @@ jobs:
 
           npm run build
 
-          # shellcheck disable=SC2086 # <-- Word splitting intended.
-          aws s3 sync ./build "s3://${{ inputs.s3-target-dest }}" $( echo ${{ inputs.s3-sync-command-params }} )
+          aws s3 sync ./build \
+            "s3://${{ secrets.S3_UPLOAD_PATH }}" \
+            $( echo ${{ inputs.s3-sync-command-params }} )

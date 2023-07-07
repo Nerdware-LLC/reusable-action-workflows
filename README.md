@@ -140,7 +140,7 @@ jobs:
 
 ## [Upload to S3](/.github/workflows/upload_to_s3.yaml)
 
-This workflow creates a NodeJS build via `npm run build`, and then uploads the resultant package to an S3 bucket using the `aws s3 sync ...` command.
+This workflow creates a NodeJS build via `npm run build`, and then uploads the resultant package to an S3 bucket using the [`aws s3 sync`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html) command.
 
 **Requirements:**
 

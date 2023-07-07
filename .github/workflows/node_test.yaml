@@ -104,7 +104,7 @@ jobs:
             export $key="$value"
           done
 
-          npm ci
+          npm ci --include=dev
 
           if npm run ${{ inputs.test-script }} ; then
             echo "did-tests-succeed=true" >> $GITHUB_OUTPUT

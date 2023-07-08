@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.4.3](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.2...v1.4.3) (2023-07-08)
+
+
+### Bug Fixes
+
+* add '/*' suffix to lts (setup-node uses nvm syntax) ([1337129](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/1337129d94f5d5a61360dea1d7524c1974cbd695))
+
 ## [1.4.2](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.1...v1.4.2) (2023-07-08)
 
 

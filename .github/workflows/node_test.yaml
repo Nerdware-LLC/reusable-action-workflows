@@ -82,7 +82,7 @@ jobs:
         run: |
           NODE_VERSION=
 
-          if [ -n ${{ inputs.node-version }} ]; then
+          if [ -n "${{ inputs.node-version }}" ]; then
             NODE_VERSION=${{ inputs.node-version }}
           elif [ -f ./package.json ]; then
 

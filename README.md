@@ -8,6 +8,7 @@ Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdw
 
 </div>
 
+- [💡 Reusable Workflow Best Practices](#reusable-workflow-best-practices)
 - 🚀 Available Workflows:
   - [ECR Image Push](#ecr-image-push)
   - [Get Docker Tags](#get-docker-tags)
@@ -15,9 +16,18 @@ Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdw
   - [S3 Image Upload](#s3-image-upload)
   - [Semantic Release](#semantic-release)
   - [Upload to S3](#upload-to-s3)
-- [📖 Relevant GitHub Documentation](#-relevant-github-documentation)
 - [📝 License](#-license)
 - [💬 Contact](#-contact)
+
+### Reusable Workflow Best Practices
+
+- When calling any [reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows), pegging the version to a specific ref/SHA is recommended. This ensures that your workflow will not break if a new version of the workflow is released which contains breaking changes. In the example below, the version is pegged to the v1.4.0 tag, but you can also use the `main` branch to always use the latest version.
+  ```yaml
+  jobs:
+    my_job_using_foo_reusable_workflow:
+      uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/foo_reusable_workflow.yaml@v1.4.0 # or @main
+  ```
+- Provide only the necessary minimum [`permissions`](https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs) to any given workflow. For more information, see "[Automatic token authentication](https://docs.github.com/en/actions/security-guides/automatic-token-authentication)."
 
 ---
 
@@ -35,7 +45,7 @@ This workflow builds a Docker image using [BuildKit](https://github.com/moby/bui
 ```yaml
 jobs:
   my_job_using_ecr_image_push:
-    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/ecr_image_push.yaml@v1.3.0 # or "@main"
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/ecr_image_push.yaml@v1.4.0 # or @main
     secrets:
       OIDC_GITHUB_ROLE_ARN: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
       AWS_ECR_PRIVATE_REPO: ${{ secrets.AWS_ECR_PRIVATE_REPO }}
@@ -66,7 +76,7 @@ In order, the tags provided in the output are as follows:
 ```yaml
 jobs:
   my_job_using_get_docker_tags:
-    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/get_docker_tags.yaml@v1.3.0 # or "@main"
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/get_docker_tags.yaml@v1.4.0 # or @main
     with:
       tag-prefix: my-image-name # required input
       version-tag: v1.0.0 # optional input - defaults to the "version" specified in package.json
@@ -84,7 +94,7 @@ If your `test-script` creates coverage reports at `<repo-root>/coverage`, the co
 ```yaml
 jobs:
   my_job_using_node_test:
-    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/node_test.yaml@v1.3.0 # or "@main"
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/node_test.yaml@v1.4.0 # or @main
     with:
       test-script: "test:ci"
       # Note the >- below; this block-chomping indicator will rm all newline chars, and separate each line by a space.
@@ -110,7 +120,7 @@ This workflow builds a Docker image as a ZIP archive and then uploads it to an S
 ```yaml
 jobs:
   my_job_using_s3_image_upload:
-    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/s3_image_upload.yaml@v1.3.0 # or "@main"
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/s3_image_upload.yaml@v1.4.0 # or @main
     with:
       image-name: foo-image-name
     secrets:
@@ -127,7 +137,7 @@ This workflow uses [Semantic Release](https://github.com/semantic-release/semant
 
 - Configuration: Your repo must include a [Semantic Release config file](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration).
 - Authentication: You must provide an auth token granting push access to the project Git repo via a secret named `SEMANTIC_RELEASE_TOKEN`. [Semantic Release requires these permissions in order to create git tags](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/ci-configuration.md#authentication).
-  - If your repo _does not_ use [branch protection rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches), the default `$GITHUB_TOKEN` is sufficient.
+  - If your repo _does not_ use [branch protection rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches), the default `GITHUB_TOKEN` is sufficient.
   - If your repo _does_ include branch protection rules, the calling workflow must instead provide a [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) granting push access to the project Git repo.
 
 **Usage:**
@@ -135,9 +145,10 @@ This workflow uses [Semantic Release](https://github.com/semantic-release/semant
 ```yaml
 jobs:
   my_job_using_release:
-    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/release.yaml@v1.3.0 # or "@main"
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/release.yaml@v1.4.0 # or @main
     secrets:
-      SEMANTIC_RELEASE_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }} # or $GITHUB_TOKEN (see above requirements)
+      SEMANTIC_RELEASE_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+      # or "${{ secrets.GITHUB_TOKEN }}" (see above info regarding auth requirements)
 ```
 
 ## [Upload to S3](/.github/workflows/upload_to_s3.yaml)
@@ -155,7 +166,7 @@ This workflow creates a NodeJS build via `npm run build`, and then uploads the r
 ```yaml
 jobs:
   my_job_using_upload_to_s3:
-    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/upload_to_s3.yaml@v1.3.0 # or "@main"
+    uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/upload_to_s3.yaml@v1.4.0 # or @main
     with:
       s3-sync-command-params: "--acl bucket-owner-full-control --sse AES256"
       # The above s3-sync command params would be sufficient for a bucket with default SSE encryption
@@ -169,11 +180,7 @@ jobs:
 
 ---
 
-### 📖 Relevant GitHub Documentation
-
-- https://docs.github.com/en/actions/using-workflows/reusing-workflows
-
-## 📝 License
+### 📝 License
 
 Nerdware-LLC/reusable-action-workflows is licensed under the [`Apache License 2.0`](/LICENSE), a permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
 

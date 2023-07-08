@@ -24,8 +24,8 @@ Author: [Trevor Anderson](https://github.com/trevor-anderson), Founder of [Nerdw
 - When calling any [reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows), pegging the version to a specific ref/SHA is recommended. This ensures that your workflow will not break if a new version of the workflow is released which contains breaking changes. In the example below, the version is pegged to the v1.4.0 tag, but you can also use the `main` branch to always use the latest version.
   ```yaml
   jobs:
-    my_job_using_foo_reusable_workflow:
-      uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/foo_reusable_workflow.yaml@v1.4.0 # or @main
+    my_job_using_foo_workflow:
+      uses: Nerdware-LLC/reusable-action-workflows/.github/workflows/foo_workflow.yaml@v1.4.0 # or @main
   ```
 - Provide only the necessary minimum [`permissions`](https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs) to any given workflow. For more information, see "[Automatic token authentication](https://docs.github.com/en/actions/security-guides/automatic-token-authentication)."
 

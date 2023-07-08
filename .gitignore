@@ -1,12 +1,12 @@
 ######################################################################
-# GitHub Template .gitignore Files 👉 https://github.com/github/gitignore
+# GitHub Template .gitignore files https://github.com/github/gitignore
 ######################################################################
-# NERDWARE gitignore ENTRIES:
+# Nerdware gitignore entries:
 
 # Notes
+NOTE*
 TODO*
 FIXME*
-NOTE*
 
 # Security
 *.bak
@@ -33,21 +33,11 @@ logs
 *.log
 
 # VSCode Related
-.vscode/*
-!.vscode/settings.json
+.vscode/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
 .history/
-
-# Diagnostic Reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# Runtime Data
-pids
-*.pid
-*.seed
-*.pid.lock
 
 ######################################################################

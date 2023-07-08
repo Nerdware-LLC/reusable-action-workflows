@@ -1,0 +1,21 @@
+name: Release Self (not callable)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/workflows/*"]
+  pull_request:
+    types: [closed]
+    branches: [main]
+    paths: [".github/workflows/*"]
+
+jobs:
+  release:
+    name: Release # if event is a closed PR, only run if PR was merged
+    if: |
+      github.event_name != 'pull_request' ||
+        github.event.pull_request.merged == true
+    uses: ./.github/workflows/release.yaml
+    secrets:
+      SEMANTIC_RELEASE_TOKEN: $GITHUB_TOKEN

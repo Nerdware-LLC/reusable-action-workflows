@@ -87,7 +87,7 @@ jobs:
           elif [ -f ./package.json ]; then
 
             # jq will output 'null' if .engines.node isn't present
-            ENGINE_NODE="$( jq '.engines.node' ../package.json )"
+            ENGINE_NODE="$( jq '.engines.node' ./package.json )"
 
             # If a value is present and is not 'null', remove any quotation marks
             # and/or semver chars and use the resultant value for the node version.

@@ -99,7 +99,7 @@ jobs:
 
           # Final fallback value if still unset
           if [ -z "$NODE_VERSION" ]; then
-            NODE_VERSION='lts'
+            NODE_VERSION='lts/*'
           fi
 
           echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT

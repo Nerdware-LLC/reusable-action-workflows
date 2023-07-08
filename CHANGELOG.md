@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.4.4](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.3...v1.4.4) (2023-07-08)
+
+
+### Bug Fixes
+
+* add quotes around inputs.node-version interp for proper sh parsing ([fb6a5ce](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/fb6a5ce76966358d87ad02d12ec6f03c989c239c))
+
 ## [1.4.3](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.2...v1.4.3) (2023-07-08)
 
 

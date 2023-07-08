@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.4.2](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.1...v1.4.2) (2023-07-08)
+
+
+### Bug Fixes
+
+* rm erroneous leading dot in package-json jq read cmd ([0a091f9](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/0a091f9387a4756f6d87f1cbb7714be4dbbbdc68))
+
 ## [1.4.1](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.0...v1.4.1) (2023-07-08)
 
 # [1.4.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.3.0...v1.4.0) (2023-07-08)

@@ -18,4 +18,4 @@ jobs:
         github.event.pull_request.merged == true
     uses: ./.github/workflows/release.yaml
     secrets:
-      SEMANTIC_RELEASE_TOKEN: $GITHUB_TOKEN
+      SEMANTIC_RELEASE_TOKEN: ${{ secrets.GITHUB_TOKEN }}

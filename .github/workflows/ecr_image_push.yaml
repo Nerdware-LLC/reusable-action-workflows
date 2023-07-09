@@ -43,7 +43,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_ECR_REGION }}
@@ -52,7 +52,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Build, Tag, and Push Image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.AWS_ECR_PRIVATE_REPO }}
@@ -65,7 +65,7 @@ jobs:
           [ "$REF_TAG" == 'next' ] && REF_TAG='staging';
           IMAGE_TAGS+=("$REF_TAG")
 
-          if [ -n ${{ inputs.version-tag }} ]; then
+          if [ -n "${{ inputs.version-tag }}" ]; then
             VERSION_TAG="${{ inputs.version-tag }}"
           elif [ -f ./package.json ]; then
             VERSION_TAG="v$( jq '.version' < ./package.json | tr -d '"' )"

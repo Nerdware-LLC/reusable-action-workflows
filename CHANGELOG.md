@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+# [1.6.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.5.0...v1.6.0) (2023-07-09)
+
+
+### Features
+
+* add input 'dockerfile-path' to ecr_image_push ([a0daaf9](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/a0daaf9e974be382dbb33474bae5a8387185ddaf))
+
 # [1.5.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.4...v1.5.0) (2023-07-09)
 
 

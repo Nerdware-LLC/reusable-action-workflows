@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+# [1.5.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.4...v1.5.0) (2023-07-09)
+
+
+### Bug Fixes
+
+* wrap inputs-expr in quotes for bash test ([e370c05](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/e370c0546e6b9816ac1f6bf0fbdc0a7df0f441ef))
+* wrap inputs-expr in quotes for bash test ([c809ce6](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/c809ce68bf891e06fccc23226ec5a553d1f146ae))
+
+
+### Features
+
+* update configure-aws-creds action to v2 ([039e595](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/039e595a6e71de417266e458a4eea1381c8ee593))
+* update configure-aws-creds action to v2 ([7acdaf6](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/7acdaf66dca31de23cca3e41813a1ac0368eab15))
+
 ## [1.4.4](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.4.3...v1.4.4) (2023-07-08)
 
 

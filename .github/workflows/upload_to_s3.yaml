@@ -8,18 +8,17 @@ on:
     inputs:
       env-vars:
         description: |
-          Arbitrary environment variables set for the build. Provide this input
-          as a string formatted as a space-separated list of key-value pairs
-          (e.g., "FOO=bar BAZ=qux"). All env-vars are masked before usage.
+          Arbitrary environment variables for the build, provided as a
+          space-separated list of key-value pairs (e.g., "FOO=bar BAZ=qux").
+          All env-vars are masked before usage.
         required: false
         type: string
       node-version:
         description: |
-          The NodeJS version to use. If this input is not provided, this workflow
-          will default to the value of "engines.node" in the package.json. If that
-          value is not provided, node "v18.16.1" will be used as a fallback.
+          The NodeJS version to use. If this input is not provided, this defaults
+          to the value of "engines.node" in package.json. If that value is not
+          provided, the latest LTS version of node will be used as a fallback.
         required: false
-        default: "18.16.1"
         type: string
       s3-sync-command-params:
         description: |
@@ -40,13 +39,13 @@ on:
         description: |
           Where to upload the resultant build. This must include the bucket name, and
           may optionally contain a subdirectory path (e.g., "my_foo_bucket/production").
-          Do NOT end with a trailing slash.
+          Do NOT end this value with a trailing slash.
         required: true
       env-vars:
         description: |
-          Arbitrary environment variables set for the build. Provide this secret
-          as a string formatted as a space-separated list of key-value pairs
-          (e.g., "FOO=bar BAZ=qux"). All env-vars are masked before usage.
+          Arbitrary environment variables for the build, provided as a
+          space-separated list of key-value pairs (e.g., "FOO=bar BAZ=qux").
+          All env-vars are masked before usage.
         required: false
 
 defaults:
@@ -57,24 +56,26 @@ jobs:
   build_and_upload:
     runs-on: ubuntu-latest
 
-    # permissions required to use aws-actions/configure-aws-credentials@v1
+    # permissions required to use aws-actions/configure-aws-credentials
     permissions:
       id-token: write
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - id: get-node-version
+      - name: Ascertain Node Version
+        id: get-node-version
         run: |
           NODE_VERSION=
 
-          if [ -n ${{ inputs.node-version }} ]; then
-            NODE_VERSION=${{ inputs.node-version }}
+          if [ -n "${{ inputs.node-version }}" ]; then
+            NODE_VERSION="${{ inputs.node-version }}"
           elif [ -f ./package.json ]; then
 
             # jq will output 'null' if .engines.node isn't present
-            ENGINE_NODE="$( jq '.engines.node' ../package.json )"
+            ENGINE_NODE="$( jq '.engines.node' ./package.json )"
 
             # If a value is present and is not 'null', remove any quotation marks
             # and/or semver chars and use the resultant value for the node version.
@@ -86,21 +87,23 @@ jobs:
 
           # Final fallback value if still unset
           if [ -z "$NODE_VERSION" ]; then
-            NODE_VERSION='18.16.1'
+            NODE_VERSION='lts/*'
           fi
 
           echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.get-node-version.outputs.node-version }}
 
-      - uses: aws-actions/configure-aws-credentials@v1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
           aws-region: ${{ secrets.S3_BUCKET_REGION }}
 
-      - name: Build & Upload
+      - name: Build & Upload to S3
         run: |
           # PARSE, MASK, AND EXPORT ENV VARS
           for env_var_kv_pair in ${{ inputs.env-vars }} ${{ secrets.env-vars }}; do

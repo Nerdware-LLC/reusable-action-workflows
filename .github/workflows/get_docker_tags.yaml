@@ -29,8 +29,10 @@ jobs:
     outputs:
       docker-tags: ${{ steps.get-docker-tags.outputs.docker-tags }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Get Docker Tags
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Ascertain Docker Tags
         id: get-docker-tags
         run: |
           IMAGE_TAGS=('latest')
@@ -40,13 +42,13 @@ jobs:
           [ "$REF_TAG" == 'next' ] && REF_TAG='staging';
           tags+=("$REF_TAG")
 
-          if [ -n ${{ inputs.version-tag }} ]; then
+          if [ -n "${{ inputs.version-tag }}" ]; then
             VERSION_TAG="${{ inputs.version-tag }}"
           elif [ -f ./package.json ]; then
             VERSION_TAG="v$( jq '.version' < ./package.json | tr -d '"' )"
           fi
 
-          [ -n $VERSION_TAG ] && IMAGE_TAGS+=("$VERSION_TAG")
+          [ -n "$VERSION_TAG" ] && IMAGE_TAGS+=("$VERSION_TAG")
 
           IMAGE_TAGS=("${IMAGE_TAGS[@]/#/${{ inputs.tag-prefix }}:}")
 

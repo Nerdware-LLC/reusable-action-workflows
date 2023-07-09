@@ -22,7 +22,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Semantic Release
+      - name: Run Semantic-Release
         uses: cycjimmy/semantic-release-action@v3
         with:
           semantic_version: ${{ inputs.semantic_version }}

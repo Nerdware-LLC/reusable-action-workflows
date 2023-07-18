@@ -112,7 +112,7 @@ jobs:
             export $key="$value"
           done
 
-          npm ci
+          npm ci --include=dev
 
           npm run build
 

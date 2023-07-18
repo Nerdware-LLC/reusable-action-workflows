@@ -9,15 +9,15 @@ on:
         description: |
           The version tag to use for the Docker image. If this value is not
           provided, the "version" specified in the package.json will be used.
-        required: false
         type: string
+        required: false
       dockerfile-path:
         description: |
           The path to the Dockerfile to use for the build. If this value is not
           provided, the Dockerfile in the root of the repo will be used.
-        default: "./Dockerfile"
-        required: false
         type: string
+        required: false
+        default: "./Dockerfile"
     secrets:
       OIDC_GITHUB_ROLE_ARN:
         description: "The ARN of the AWS IAM Role for the GitHub OpenID Connect provider"

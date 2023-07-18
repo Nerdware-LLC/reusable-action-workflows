@@ -10,14 +10,14 @@ on:
           A value to prefix all tags such as an image name or repo. For example,
           if "tag-prefix" is "my-image", and "version-tag" is "v1", the resultant
           final version-tag would be "my-image:v1".
-        required: true
         type: string
+        required: true
       version-tag:
         description: |
           The version tag to use for the Docker image. If this input is not
           provided, the "version" specified in the package.json will be used.
-        required: false
         type: string
+        required: false
 
 defaults:
   run:

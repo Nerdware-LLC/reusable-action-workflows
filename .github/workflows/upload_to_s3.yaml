@@ -11,22 +11,22 @@ on:
           Arbitrary environment variables for the build, provided as a
           space-separated list of key-value pairs (e.g., "FOO=bar BAZ=qux").
           All env-vars are masked before usage.
-        required: false
         type: string
+        required: false
       node-version:
         description: |
           The NodeJS version to use. If this input is not provided, this defaults
           to the value of "engines.node" in package.json. If that value is not
           provided, the latest LTS version of node will be used as a fallback.
-        required: false
         type: string
+        required: false
       s3-sync-command-params:
         description: |
           The options to use with the `aws s3 sync` operation. sync command docs:
           https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/sync.html#options
+        type: string
         required: false
         default: "--acl bucket-owner-full-control --sse AES256"
-        type: string
 
     secrets:
       OIDC_GITHUB_ROLE_ARN:

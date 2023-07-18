@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+# [1.7.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.6.0...v1.7.0) (2023-07-18)
+
+
+### Bug Fixes
+
+* add include=dev to 'npm ci' for build process ([479d656](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/479d656ef3f75442291d563aabdd447015397dc9))
+
+
+### Features
+
+* ensure job fails if tests fail, replace 'did-tests-succeed' w outcome ([2ed9454](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/2ed945481f863e88c3aac02ad6a130e5f5cc9c01))
+* **release:** rm 'release-self' workflow, configure 'release' to run on push ([8c5ce63](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/8c5ce638964697ca0fd26d48e40521451a1f8306))
+
 # [1.6.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.5.0...v1.6.0) (2023-07-09)
 
 

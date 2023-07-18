@@ -35,6 +35,7 @@ defaults:
 
 jobs:
   push_to_ecr:
+    name: Push to ECR
     runs-on: ubuntu-latest
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.

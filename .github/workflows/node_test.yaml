@@ -73,6 +73,7 @@ defaults:
 
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
     outputs:
       did-tests-succeed: ${{ steps.run-tests.outputs.did-tests-succeed }}

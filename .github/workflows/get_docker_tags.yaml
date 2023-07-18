@@ -25,6 +25,7 @@ defaults:
 
 jobs:
   get-docker-tags:
+    name: Get Docker Tags
     runs-on: ubuntu-latest
     outputs:
       docker-tags: ${{ steps.get-docker-tags.outputs.docker-tags }}

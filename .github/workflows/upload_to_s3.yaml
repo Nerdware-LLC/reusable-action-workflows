@@ -54,6 +54,7 @@ defaults:
 
 jobs:
   build_and_upload:
+    name: Build & Upload
     runs-on: ubuntu-latest
 
     # permissions required to use aws-actions/configure-aws-credentials

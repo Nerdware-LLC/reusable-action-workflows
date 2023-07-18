@@ -5,12 +5,20 @@ on:
     inputs:
       semantic_version:
         description: "The Semantic Release version to use"
-        default: "19.0.5"
-        required: false
         type: string
+        required: false
+        default: "19.0.5"
     secrets:
       SEMANTIC_RELEASE_TOKEN:
+        description: |
+          A GitHub token with push access to the repo. If the repo which
+          contains the calling workflow does not have protected branches,
+          the default `GITHUB_TOKEN` is sufficient.
         required: true
+  # For this repo's own releases:
+  push:
+    branches: [main]
+    paths: [".github/workflows/*"]
 
 jobs:
   release:
@@ -30,4 +38,10 @@ jobs:
             @semantic-release/changelog@6.0.1
             @semantic-release/git@10.0.1
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+          # The GITHUB_TOKEN value provided depends on the event type:
+          #   On push events to own repo, use the default GITHUB_TOKEN.
+          #   On workflow_call events, use the SEMANTIC_RELEASE_TOKEN secret.
+          GITHUB_TOKEN: >-
+            ${{ github.repository == 'Nerdware-LLC/reusable-action-workflows' &&
+                secrets.GITHUB_TOKEN ||
+                secrets.SEMANTIC_RELEASE_TOKEN }}

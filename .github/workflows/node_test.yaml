@@ -128,7 +128,7 @@ jobs:
           npm run ${{ inputs.test-script }}
 
       - name: Update GitHub Commit Status
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         run: |
           if [ ${{ steps.run-tests.outcome }} == 'success' ]; then
             commit_status_state='success'

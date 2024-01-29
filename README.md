@@ -190,36 +190,27 @@ See [LICENSE](/LICENSE) for more information.
 
 ## 💬 Contact
 
-Trevor Anderson - [@TeeRevTweets](https://twitter.com/teerevtweets) - [Trevor@Nerdware.cloud](mailto:Trevor@Nerdware.cloud)
+Trevor Anderson — [Trevor@Nerdware.cloud](mailto:Trevor@Nerdware.cloud) — [@TeeRevTweets](https://twitter.com/teerevtweets)
 
-  <a href="https://www.youtube.com/channel/UCguSCK_j1obMVXvv-DUS3ng">
-    <img src="./.github/assets/YouTube_icon_circle.svg" height="40" />
+  <a href="https://www.youtube.com/@nerdware-io">
+    <img src="./.github/assets/YouTube_icon_circle.svg" height="40" alt="Check out Nerdware on YouTube" />
   </a>
   &nbsp;
-  <a href="https://www.linkedin.com/in/trevor-anderson-3a3b0392/">
-    <img src="./.github/assets/LinkedIn_icon_circle.svg" height="40" />
+  <a href="https://www.linkedin.com/in/meet-trevor-anderson/">
+    <img src="./.github/assets/LinkedIn_icon_circle.svg" height="40" alt="Trevor Anderson's LinkedIn" />
   </a>
   &nbsp;
   <a href="https://twitter.com/TeeRevTweets">
-    <img src="./.github/assets/Twitter_icon_circle.svg" height="40" />
+    <img src="./.github/assets/Twitter_icon_circle.svg" height="40" alt="Trevor Anderson's Twitter" />
   </a>
   &nbsp;
   <a href="mailto:Trevor@Nerdware.cloud">
-    <img src="./.github/assets/email_icon_circle.svg" height="40" />
+    <img src="./.github/assets/email_icon_circle.svg" height="40" alt="Email Trevor Anderson" />
   </a>
   <br><br>
 
-  <a href="https://daremightythings.co/">
+  <a href="https://www.youtube.com/watch?v=GO5FwsblpT8">
     <strong><i>Dare Mighty Things.</i></strong>
   </a>
 
 </div>
-
-<!-- LINKS -->
-
-[pre-commit-shield]: https://img.shields.io/badge/pre--commit-33A532.svg?logo=pre-commit&logoColor=F8B424&labelColor=gray
-[semantic-shield]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-E10079.svg
-[semantic-gh-action-url]: https://github.com/cycjimmy/semantic-release-action
-[license-shield]: https://img.shields.io/badge/license-Proprietary-000080.svg?labelColor=gray
-[gh-action-docs-url]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
-[gh-pat-docs-url]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token

@@ -20,9 +20,14 @@ on:
         default: "test:ci"
       node-version:
         description: |
-          The NodeJS version to use. If this input is not provided, this defaults
-          to the value of "engines.node" in package.json. If that value is not
-          provided, the latest LTS version of node will be used as a fallback.
+          The NodeJS version to use. If this input is not provided, the version
+          specified in .nvmrc will be used if available — as a final fallback,
+          the version specified in the package.json "engines.node" field will
+          be used.
+        type: string
+        required: false
+      node-version-file:
+        description: The path to the file containing the NodeJS version to use.
         type: string
         required: false
       coverage-reports-dir:
@@ -81,37 +86,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ascertain Node Version
-        id: get-node-version
-        run: |
-          NODE_VERSION=
-
-          if [ -n "${{ inputs.node-version }}" ]; then
-            NODE_VERSION=${{ inputs.node-version }}
-          elif [ -f ./package.json ]; then
-
-            # jq will output 'null' if .engines.node isn't present
-            ENGINE_NODE="$( jq '.engines.node' ./package.json )"
-
-            # If a value is present and is not 'null', remove any quotation marks
-            # and/or semver chars and use the resultant value for the node version.
-
-            if [[ -n "$ENGINE_NODE" && "$ENGINE_NODE" != 'null' ]]; then
-              NODE_VERSION="$( sed -r 's/["^~<>= ]//g' <<< "$ENGINE_NODE" )"
-            fi
-          fi
-
-          # Final fallback value if still unset
-          if [ -z "$NODE_VERSION" ]; then
-            NODE_VERSION='lts/*'
-          fi
-
-          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
-
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ steps.get-node-version.outputs.node-version }}
+          node-version: ${{ inputs.node-version }}
+          node-version-file: ${{ inputs.node-version-file }}
 
       - name: Run Tests
         id: run-tests
@@ -174,7 +153,7 @@ jobs:
           success() &&
           inputs.should-update-codecov == true &&
           steps.check-for-coverage-reports.outputs.did-find-reports == 'true'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # <-- not required for public repos
           directory: ${{ inputs.coverage-reports-dir }}

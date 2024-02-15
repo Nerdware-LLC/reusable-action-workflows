@@ -31,7 +31,7 @@ jobs:
       docker-tags: ${{ steps.get-docker-tags.outputs.docker-tags }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Ascertain Docker Tags
         id: get-docker-tags

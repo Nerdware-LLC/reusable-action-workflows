@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+# [1.8.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.7.2...v1.8.0) (2024-02-15)
+
+
+### Bug Fixes
+
+* correct vscode dir gitignore pattern ([c2277c7](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/c2277c7c4e33c33df86ef81e6d45407b4cf46436))
+
+
+### Features
+
+* bump actions/checkout to v4 ([ff096b1](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/ff096b176447862dbfe2b121554822523f6375b3))
+* bump SemRel action to v4 ([104acd8](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/104acd88c932157c42ed046fbebefa738520ab5f))
+* bump setup-node to v4 ([76cc975](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/76cc975f871d383c53b846c2f4d185bb8d370041))
+* rm explicit default SemRel version to use action default ([a8fce5d](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/a8fce5db2685c65488216a244e02d9d57d095ee0))
+* rm node-v logic w node-version-file input ([8f2f4ef](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/8f2f4ef216fc102d5c58134644b205d48a3c8a0f))
+
 ## [1.7.2](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.7.1...v1.7.2) (2023-10-09)
 
 ## [1.7.1](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.7.0...v1.7.1) (2023-07-18)

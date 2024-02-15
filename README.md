@@ -192,25 +192,14 @@ See [LICENSE](/LICENSE) for more information.
 
 Trevor Anderson — [Trevor@Nerdware.cloud](mailto:Trevor@Nerdware.cloud) — [@TeeRevTweets](https://twitter.com/teerevtweets)
 
-  <a href="https://www.youtube.com/@nerdware-io">
-    <img src="./.github/assets/YouTube_icon_circle.svg" height="40" alt="Check out Nerdware on YouTube" />
-  </a>
-  &nbsp;
-  <a href="https://www.linkedin.com/in/meet-trevor-anderson/">
-    <img src="./.github/assets/LinkedIn_icon_circle.svg" height="40" alt="Trevor Anderson's LinkedIn" />
-  </a>
-  &nbsp;
-  <a href="https://twitter.com/TeeRevTweets">
-    <img src="./.github/assets/Twitter_icon_circle.svg" height="40" alt="Trevor Anderson's Twitter" />
-  </a>
-  &nbsp;
-  <a href="mailto:Trevor@Nerdware.cloud">
-    <img src="./.github/assets/email_icon_circle.svg" height="40" alt="Email Trevor Anderson" />
-  </a>
-  <br><br>
+[<img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/YouTube_icon_circle.svg" height="40" alt="Check out Nerdware on YouTube" />](https://www.youtube.com/@nerdware-io)
+&emsp;
+[<img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/LinkedIn_icon_circle.svg" height="40" alt="Trevor Anderson's LinkedIn" />](https://www.linkedin.com/in/meet-trevor-anderson/)
+&emsp;
+[<img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/Twitter_icon_circle.svg" height="40" alt="Trevor Anderson's Twitter" />](https://twitter.com/TeeRevTweets)
+&emsp;
+[<img src="https://github.com/trevor-anderson/trevor-anderson/blob/main/assets/email_icon_circle.svg" height="40" alt="Email Trevor Anderson" />](mailto:trevor@nerdware.cloud)
 
-  <a href="https://www.youtube.com/watch?v=GO5FwsblpT8">
-    <strong><i>Dare Mighty Things.</i></strong>
-  </a>
+[**_Dare Mighty Things._**](https://www.youtube.com/watch?v=GO5FwsblpT8)
 
 </div>

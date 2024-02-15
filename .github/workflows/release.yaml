@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run Semantic-Release
-        uses: cycjimmy/semantic-release-action@v3
+        uses: cycjimmy/semantic-release-action@v4
         with:
           semantic_version: ${{ inputs.semantic_version }}
           extra_plugins: |

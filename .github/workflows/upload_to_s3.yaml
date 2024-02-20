@@ -83,7 +83,7 @@ jobs:
           node-version-file: ${{ inputs.node-version-file }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.OIDC_GITHUB_ROLE_ARN }}
           aws-region: ${{ secrets.S3_BUCKET_REGION }}

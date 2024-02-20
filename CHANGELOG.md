@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+# [1.10.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.9.0...v1.10.0) (2024-02-20)
+
+
+### Features
+
+* bump configure-aws-credentials actions to v4 ([3f5599b](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/3f5599b218f90bb3fb096671786417809d1faf2d))
+
 # [1.9.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.8.0...v1.9.0) (2024-02-20)
 
 

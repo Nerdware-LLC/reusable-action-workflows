@@ -15,11 +15,21 @@ on:
         required: false
       node-version:
         description: |
-          The NodeJS version to use. If this input is not provided, this defaults
-          to the value of "engines.node" in package.json. If that value is not
-          provided, the latest LTS version of node will be used as a fallback.
+          The NodeJS version to use. If this input is not provided, the version
+          specified in .nvmrc will be used if available — as a final fallback,
+          the version specified in the package.json "engines.node" field will
+          be used.
         type: string
         required: false
+      node-version-file:
+        description: The path to the file containing the NodeJS version to use.
+        type: string
+        required: false
+      dist-dirname:
+        description: The name of the directory containing the build output.
+        type: string
+        required: false
+        default: "dist"
       s3-sync-command-params:
         description: |
           The options to use with the `aws s3 sync` operation. sync command docs:
@@ -66,37 +76,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Ascertain Node Version
-        id: get-node-version
-        run: |
-          NODE_VERSION=
-
-          if [ -n "${{ inputs.node-version }}" ]; then
-            NODE_VERSION="${{ inputs.node-version }}"
-          elif [ -f ./package.json ]; then
-
-            # jq will output 'null' if .engines.node isn't present
-            ENGINE_NODE="$( jq '.engines.node' ./package.json )"
-
-            # If a value is present and is not 'null', remove any quotation marks
-            # and/or semver chars and use the resultant value for the node version.
-
-            if [[ -n "$ENGINE_NODE" && "$ENGINE_NODE" != 'null' ]]; then
-              NODE_VERSION="$( sed -r 's/["^~<>= ]//g' <<< "$ENGINE_NODE" )"
-            fi
-          fi
-
-          # Final fallback value if still unset
-          if [ -z "$NODE_VERSION" ]; then
-            NODE_VERSION='lts/*'
-          fi
-
-          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ steps.get-node-version.outputs.node-version }}
+          node-version: ${{ inputs.node-version }}
+          node-version-file: ${{ inputs.node-version-file }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -117,6 +101,6 @@ jobs:
 
           npm run build
 
-          aws s3 sync ./build \
+          aws s3 sync ./${{ inputs.dist-dirname }} \
             "s3://${{ secrets.S3_UPLOAD_PATH }}" \
             $( echo ${{ inputs.s3-sync-command-params }} )

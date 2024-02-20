@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+# [1.9.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.8.0...v1.9.0) (2024-02-20)
+
+
+### Features
+
+* add inputs 'node-version-file' and 'dist-dirname' ([d269712](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/d269712121dc68e524a3dfa69cce2f42c7ebdb7a))
+
 # [1.8.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.7.2...v1.8.0) (2024-02-15)
 
 

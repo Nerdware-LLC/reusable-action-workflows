@@ -101,6 +101,11 @@ jobs:
 
           npm run build
 
-          aws s3 sync ./${{ inputs.dist-dirname }} \
-            "s3://${{ secrets.S3_UPLOAD_PATH }}" \
+          # ENSURE AWS CLI ARGS DO NOT CONTAIN LEADING/TRAILING WHITESPACE:
+
+          dir_dirname="$( tr -d ' ' <<< "${{ inputs.dist-dirname }}" )"
+          s3_upload_path="$( tr -d ' ' <<< "${{ secrets.S3_UPLOAD_PATH }}" )"
+
+          aws s3 sync "./$dir_dirname" \
+            "s3://$s3_upload_path" \
             $( echo ${{ inputs.s3-sync-command-params }} )

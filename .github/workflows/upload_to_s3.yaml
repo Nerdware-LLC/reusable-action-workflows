@@ -103,9 +103,9 @@ jobs:
 
           # ENSURE AWS CLI ARGS DO NOT CONTAIN LEADING/TRAILING WHITESPACE:
 
-          dir_dirname="$( tr -d ' ' <<< "${{ inputs.dist-dirname }}" )"
+          dist_dirname="$( tr -d ' ' <<< "${{ inputs.dist-dirname }}" )"
           s3_upload_path="$( tr -d ' ' <<< "${{ secrets.S3_UPLOAD_PATH }}" )"
 
-          aws s3 sync "./$dir_dirname" \
+          aws s3 sync "./$dist_dirname" \
             "s3://$s3_upload_path" \
             $( echo ${{ inputs.s3-sync-command-params }} )

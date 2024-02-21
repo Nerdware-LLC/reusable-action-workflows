@@ -35,7 +35,7 @@ jobs:
         with:
           semantic_version: ${{ inputs.semantic_version }}
           extra_plugins: |
-            @semantic-release/changelog@6.0.1
+            @semantic-release/changelog@6.0.3
             @semantic-release/git@10.0.1
         env:
           # The GITHUB_TOKEN value provided depends on the event type:

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [1.10.1](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.10.0...v1.10.1) (2024-02-21)
+
+
+### Bug Fixes
+
+* ensure aws cli args are stripped of leading/trailing whitespace ([cba694e](https://github.com/Nerdware-LLC/reusable-action-workflows/commit/cba694e98a2851df18d9e206d7486468ca76608c))
+
 # [1.10.0](https://github.com/Nerdware-LLC/reusable-action-workflows/compare/v1.9.0...v1.10.0) (2024-02-20)
 
 
